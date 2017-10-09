@@ -2,12 +2,8 @@ package com.lightbend.akka.vasko.main;
 
 import akka.actor.*;
 import com.lightbend.akka.vasko.actor.FileReader;
-import com.lightbend.akka.vasko.actor.Printer;
-import com.lightbend.akka.vasko.actor.RouterManager;
-import com.lightbend.akka.vasko.message.CharcountWork;
 import com.lightbend.akka.vasko.message.FileWork;
 
-import java.io.IOException;
 
 public class CounterMain {
 
@@ -18,7 +14,7 @@ public class CounterMain {
 
             try {
                 ActorRef fileReader = actorSystem.actorOf(Props.create(FileReader.class));
-                fileReader.tell(new FileWork("/etc/passwd"), ActorRef.noSender());
+                fileReader.tell(new FileWork("./pom.xml"), ActorRef.noSender());
             } finally {
             }
         }

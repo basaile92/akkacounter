@@ -1,8 +1,6 @@
 package com.lightbend.akka.vasko.actor;
 
 import akka.actor.*;
-import com.lightbend.akka.vasko.main.CounterMain;
-import com.lightbend.akka.vasko.message.CharcountWork;
 import com.lightbend.akka.vasko.message.Work;
 
 import java.util.regex.Matcher;
@@ -10,16 +8,8 @@ import java.util.regex.Pattern;
 
 public class Worker extends AbstractActor{
 
-    public static String patternMatching = "i";
-    public int counter;
-    public String msg;
-
-    public Worker() {
-    }
-
-    public Worker(String msg) {
-        this.msg = msg;
-    }
+    public static String patternMatching = "e";
+    public int counter = 0;
 
     @Override
     public Receive createReceive() {
@@ -34,7 +24,8 @@ public class Worker extends AbstractActor{
         while (matcher.find()) {
             counter++;
         }
-        System.out.println(msg + counter);
+        ActorRef sender = getSender();
+        sender.tell(counter, getSelf());
         getContext().stop(getSelf());
     }
 

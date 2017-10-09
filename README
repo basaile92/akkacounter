@@ -1,0 +1,21 @@
+Basile DYMENT
+Nicolas SVIRCHEVSKY
+
+Akka Project [Completed]
+
+- FileReader actor is called with the path of the file to read in a FileWork.class by CounterMain
+- it creates a RouterManager and send all the line of the file in a Work.class; finishing by sending EndOfFile.class.
+- RouterManager creates a Worker at every Work received.
+- If every workers are Terminated AND EnfOfFile has been received, it prints and close the program.
+- Workers send the result Integer.class to RouterManager by calling getSender()::tell()
+
+Issues:
+
+- Terminating an Actor (just reading the documentation was enough)
+- Understanding when to sum up all the workers results (EndOfFile + knowing how many workers are busy)
+- RouterManager receives Work.class faster than Worker were Terminated and no mailbox were implemented
+  Resulting in loosing messages because of no worker available.
+  We chose to create a worker every Work.class received instead of implementing a Mailbox. (Not the goal of the project)
+
+How to run:
+mvn compiler:compile exec:java
