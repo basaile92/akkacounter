@@ -3,6 +3,7 @@ package com.lightbend.akka.vasko.actor;
 
 import akka.actor.*;
 import akka.routing.*;
+import com.lightbend.akka.vasko.main.CounterMain;
 import com.lightbend.akka.vasko.message.CharcountWork;
 import com.lightbend.akka.vasko.message.FileWork;
 import com.lightbend.akka.vasko.message.Work;
@@ -16,7 +17,7 @@ public class RouterManager extends AbstractActor {
 
     {
         List<Routee> routees = new ArrayList<Routee>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 300; i++) {
             ActorRef r = getContext().actorOf(Props.create(Worker.class));
             getContext().watch(r);
             routees.add(new ActorRefRoutee(r));
@@ -24,23 +25,21 @@ public class RouterManager extends AbstractActor {
         router = new Router(new RoundRobinRoutingLogic(), routees);
     }
 
+
+
     public Receive createReceive() {
         return receiveBuilder()
-                .match(FileWork.class, message -> {
-                    ActorRef r = getContext().actorOf(Props.create(FileReader.class));
-                    router.route(message, r);
-                })
                 .match(Work.class, message -> {
                     ActorRef r = getContext().actorOf(Props.create(Worker.class));
                     router.route(message, r);
                 })
-                .match(CharcountWork.class, message -> {
-                    ActorRef r = getContext().actorOf(Props.create(Printer.class));
-                    router.route(message, r);
+                .match(Display.class, message -> {
+                    System.out.println("printer");
+                    CounterMain.actorSystem.terminate();
                 })
                 .match(Terminated.class, message -> {
                     router = router.removeRoutee(message.actor());
-                    ActorRef r = getContext().actorOf(Props.create(Worker.class));
+                    ActorRef r = getContext().actorOf(Props.create(Worker.class, "test"));
                     getContext().watch(r);
                     router = router.addRoutee(new ActorRefRoutee(r));
                 })

@@ -1,7 +1,10 @@
 package com.lightbend.akka.vasko.main;
 
 import akka.actor.*;
+import com.lightbend.akka.vasko.actor.FileReader;
+import com.lightbend.akka.vasko.actor.Printer;
 import com.lightbend.akka.vasko.actor.RouterManager;
+import com.lightbend.akka.vasko.message.CharcountWork;
 import com.lightbend.akka.vasko.message.FileWork;
 
 import java.io.IOException;
@@ -14,15 +17,9 @@ public class CounterMain {
         public static void main(String[] args) {
 
             try {
-                ActorRef routerManager = actorSystem.actorOf(Props.create(RouterManager.class));
-                routerManager.tell(new FileWork("/default.profraw"), ActorRef.noSender());
-                System.out.print("Finished ?");
-                System.in.read();
-
-            } catch (IOException e) {
-
+                ActorRef fileReader = actorSystem.actorOf(Props.create(FileReader.class));
+                fileReader.tell(new FileWork("/etc/passwd"), ActorRef.noSender());
             } finally {
-                actorSystem.terminate();
             }
         }
 
